@@ -22,10 +22,12 @@ const descriptions = {
     9:"Девятки — память и интеллект."
 };
 
+// Получение всех цифр даты
 function getDigits(str) {
     return str.split('').filter(c=>/\d/.test(c)).map(Number);
 }
 
+// Расчёт чисел Пифагора
 function calculateMatrix(birth) {
     const digits = getDigits(birth);
     if(digits.length === 0) return null;
@@ -58,6 +60,7 @@ function calculateMatrix(birth) {
     return {matrix, sum1, sum2, sum3, sum4, destiny, temperament, goal, family, habits, spirituality};
 }
 
+// Анимация плавного появления
 function animateElements() {
     document.querySelectorAll(".cell").forEach((el,i)=>{
         el.style.animationDelay=`${i*0.15}s`;
@@ -72,16 +75,19 @@ function animateElements() {
     extra.classList.add("show");
 }
 
-// Горизонтальная раскладка: строки по классической таблице
+// Горизонтальная раскладка по твоему запросу:
+// 1 → 4 → 7  
+// 2 → 5 → 8  
+// 3 → 6 → 9
 function renderResults(data) {
     const grid = document.getElementById("matrixGrid");
     const side = document.getElementById("sideValues");
     const extra = document.getElementById("extraValues");
 
     const layoutOrder = [
-        1,2,3,   // строка 1
-        4,5,6,   // строка 2
-        7,8,9    // строка 3
+        1,4,7,
+        2,5,8,
+        3,6,9
     ];
 
     grid.innerHTML = "";
@@ -113,6 +119,7 @@ function renderResults(data) {
     animateElements();
 }
 
+// Обработка формы
 document.getElementById("birthForm").addEventListener("submit", e=>{
     e.preventDefault();
     const birth = document.getElementById("birthDate").value;
