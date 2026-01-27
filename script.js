@@ -46,6 +46,17 @@ function calculateMatrix(birth) {
     return {matrix, sum1, sum2, sum3, sum4, destiny, temperament, goal, family, habits, spirituality};
 }
 
+function animateElements() {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((el, i) => setTimeout(() => el.classList.add("show"), i * 100));
+
+    const sideDivs = document.querySelectorAll(".side div");
+    sideDivs.forEach((el, i) => setTimeout(() => el.classList.add("show"), 400 + i * 100));
+
+    const extra = document.querySelector(".extra");
+    setTimeout(() => extra.classList.add("show"), 1000);
+}
+
 function renderResults(data) {
     const grid = document.getElementById("matrixGrid");
     const side = document.getElementById("sideValues");
@@ -82,6 +93,8 @@ function renderResults(data) {
         <h2>Число судьбы</h2>
         <div class="destiny">${data.destiny}</div>
     `;
+
+    animateElements();
 }
 
 document.getElementById("birthForm").addEventListener("submit",function(e){
