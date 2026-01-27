@@ -48,13 +48,20 @@ function calculateMatrix(birth) {
 
 function animateElements() {
     const cells = document.querySelectorAll(".cell");
-    cells.forEach((el, i) => setTimeout(() => el.classList.add("show"), i * 100));
+    cells.forEach((el, i) => {
+        el.style.animationDelay = `${i*0.15}s`;
+        el.classList.add("show");
+    });
 
     const sideDivs = document.querySelectorAll(".side div");
-    sideDivs.forEach((el, i) => setTimeout(() => el.classList.add("show"), 400 + i * 100));
+    sideDivs.forEach((el, i) => {
+        el.style.animationDelay = `${0.4 + i*0.15}s`;
+        el.classList.add("show");
+    });
 
     const extra = document.querySelector(".extra");
-    setTimeout(() => extra.classList.add("show"), 1000);
+    extra.style.animationDelay = "1s";
+    extra.classList.add("show");
 }
 
 function renderResults(data) {
