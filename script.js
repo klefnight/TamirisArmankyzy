@@ -10,6 +10,18 @@ const descriptions = {
     "9":"Девятки — память и интеллект."
 };
 
+const titles = {
+    "1":"Характер",
+    "2":"Энергия",
+    "3":"Интерес",
+    "4":"Здоровье",
+    "5":"Логика",
+    "6":"Труд",
+    "7":"Удача",
+    "8":"Долг",
+    "9":"Память"
+};
+
 function getDigits(str) {
     return str.split('').filter(c=>/\d/.test(c)).map(Number);
 }
@@ -69,19 +81,16 @@ function renderResults(data) {
     const side = document.getElementById("sideValues");
     const extra = document.getElementById("extraValues");
 
-    const titles = {
-        "1":"Характер","2":"Энергия","3":"Интерес",
-        "4":"Здоровье","5":"Логика","6":"Труд",
-        "7":"Удача","8":"Долг","9":"Память"
-    };
+    // Правильный порядок ячеек по твоему примеру
+    const layoutOrder = [1,4,7,2,5,8,3,6,9];
 
-    grid.innerHTML="";
-    for(let i=1;i<=9;i++){
+    grid.innerHTML = "";
+    layoutOrder.forEach(i => {
         let div = document.createElement("div");
-        div.className="cell";
-        div.innerHTML=`<strong>${titles[i]}</strong><br>${data.matrix[i]||"—"}<p class="desc">${descriptions[i]}</p>`;
+        div.className = "cell";
+        div.innerHTML = `<strong>${titles[i]}</strong><br>${data.matrix[i] || "—"}<p class="desc">${descriptions[i]}</p>`;
         grid.appendChild(div);
-    }
+    });
 
     side.innerHTML=`
         <div>Темперамент<br><strong>${data.temperament}</strong></div>
