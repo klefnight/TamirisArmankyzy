@@ -39,9 +39,11 @@ button {
     flex-wrap: wrap;
 }
 
+/* 🔥 ГЛАВНОЕ ИСПРАВЛЕНИЕ */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 190px);
+    grid-auto-flow: row;
     gap: 15px;
 }
 
@@ -109,6 +111,7 @@ button {
     animation: fadeUp 0.6s ease forwards;
 }
 
+/* 📱 МОБИЛКА — МАТРИЦА НЕ ЛОМАЕТСЯ */
 @media (max-width: 900px) {
     .layout {
         flex-direction: column;
@@ -116,7 +119,7 @@ button {
     }
 
     .grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .side {
