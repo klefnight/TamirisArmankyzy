@@ -52,12 +52,6 @@ button {
     border-radius: 18px;
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.5s ease;
-}
-
-.cell.show {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .desc {
@@ -78,30 +72,41 @@ button {
     margin-bottom: 10px;
     opacity: 0;
     transform: translateX(20px);
-    transition: all 0.5s ease;
-}
-
-.side div.show {
-    opacity: 1;
-    transform: translateX(0);
 }
 
 .extra {
     margin-top: 40px;
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.5s ease;
-}
-
-.extra.show {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .destiny {
     font-size: 42px;
     color: #d45c8b;
     font-weight: bold;
+}
+
+/* Анимации */
+@keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(20px);}
+    100% { opacity: 1; transform: translateY(0);}
+}
+
+@keyframes fadeRight {
+    0% { opacity: 0; transform: translateX(20px);}
+    100% { opacity: 1; transform: translateX(0);}
+}
+
+.cell.show {
+    animation: fadeUp 0.6s ease forwards;
+}
+
+.side div.show {
+    animation: fadeRight 0.6s ease forwards;
+}
+
+.extra.show {
+    animation: fadeUp 0.6s ease forwards;
 }
 
 @media (max-width: 900px) {
