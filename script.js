@@ -12,13 +12,13 @@ const descriptions = {
 
 const titles = {
     "1":"Характер",
-    "2":"Энергия",
-    "3":"Интерес",
-    "4":"Здоровье",
+    "2":"Здоровье",
+    "3":"Удача",
+    "4":"Энергия",
     "5":"Логика",
-    "6":"Труд",
-    "7":"Удача",
-    "8":"Долг",
+    "6":"Долг",
+    "7":"Интерес",
+    "8":"Труд",
     "9":"Память"
 };
 
@@ -76,4 +76,47 @@ function animateElements() {
     extra.classList.add("show");
 }
 
-function renderRes
+function renderResults(data) {
+    const grid = document.getElementById("matrixGrid");
+    const side = document.getElementById("sideValues");
+    const extra = document.getElementById("extraValues");
+
+    // Новый порядок: 1→Характер, 2→Здоровье, 3→Удача, 4→Энергия, 5→Логика, 6→Долг, 7→Интерес, 8→Труд, 9→Память
+    const layoutOrder = [1,2,3,4,5,6,7,8,9];
+
+    grid.innerHTML = "";
+    layoutOrder.forEach(i => {
+        let div = document.createElement("div");
+        div.className = "cell";
+        div.innerHTML = `<strong>${titles[i]}</strong><br>${data.matrix[i] || "—"}<p class="desc">${descriptions[i]}</p>`;
+        grid.appendChild(div);
+    });
+
+    side.innerHTML=`
+        <div>Темперамент<br><strong>${data.temperament}</strong></div>
+        <div>Цель<br><strong>${data.goal}</strong></div>
+        <div>Семья<br><strong>${data.family}</strong></div>
+        <div>Привычки<br><strong>${data.habits}</strong></div>
+        <div>Духовность<br><strong>${data.spirituality}</strong></div>
+    `;
+
+    extra.innerHTML=`
+        <h2>Дополнительные числа</h2>
+        <p>1-е: ${data.sum1}</p>
+        <p>2-е: ${data.sum2}</p>
+        <p>3-е: ${data.sum3}</p>
+        <p>4-е: ${data.sum4}</p>
+        <h2>Число судьбы</h2>
+        <div class="destiny">${data.destiny}</div>
+    `;
+
+    animateElements();
+}
+
+document.getElementById("birthForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    const birth = document.getElementById("birthDate").value;
+    const data = calculateMatrix(birth);
+    if(data) renderResults(data);
+    else alert("Введите корректную дату в формате ДД.ММ.ГГГГ");
+});
