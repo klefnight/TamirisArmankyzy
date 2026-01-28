@@ -33,10 +33,20 @@ function calculateMatrix(birth) {
     if(digits.length === 0) return null;
 
     const sum1 = digits.reduce((a,b)=>a+b,0);
-    const sum2 = getDigits(String(sum1)).reduce((a,b)=>a+b,0);
-    const first = digits[0];
-    const sum3 = Math.abs(sum1 - 2*first);
-    const sum4 = getDigits(String(sum3)).reduce((a,b)=>a+b,0);
+
+    // sum2 — редукция sum1
+    const sum2raw = getDigits(String(sum1)).reduce((a,b)=>a+b,0);
+    const sum2 = sum2raw;
+
+    // sum3 = sum1 - sum2 по классике Пифагора
+    let sum3 = sum1 - sum2;
+    if(sum3 <= 0) sum3 = 3; // правило для нуля или отрицательного числа
+
+    // sum4 = редукция sum3 до однозначного
+    let sum4 = sum3;
+    while(sum4 > 9) {
+        sum4 = getDigits(String(sum4)).reduce((a,b)=>a+b,0);
+    }
 
     const fullDigits = digits.concat(
         getDigits(String(sum1)),
@@ -45,11 +55,11 @@ function calculateMatrix(birth) {
         getDigits(String(sum4))
     );
 
+    const destiny = sum2 > 9 ? getDigits(String(sum2)).reduce((a,b)=>a+b,0) : sum2;
+
     const matrix = {};
     for(let i=1;i<=9;i++) matrix[i]="";
     fullDigits.forEach(d=>matrix[d]+=d);
-
-    const destiny = sum2 > 9 ? getDigits(String(sum2)).reduce((a,b)=>a+b,0) : sum2;
 
     const temperament = matrix[2].length+matrix[4].length+matrix[6].length;
     const goal = matrix[1].length+matrix[4].length+matrix[7].length;
