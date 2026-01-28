@@ -1,89 +1,129 @@
-function calculate() {
-    const birth = document.getElementById("birth").value;
+const titles = {
+    1:"Характер",
+    2:"Энергия",
+    3:"Интерес",
+    4:"Здоровье",
+    5:"Логика",
+    6:"Труд",
+    7:"Удача",
+    8:"Долг",
+    9:"Память"
+};
 
-    if (!/^\d{2}\.\d{2}\.\d{4}$/.test(birth)) {
-        alert("Введите дату в формате ДД.ММ.ГГГГ");
-        return;
-    }
+const descriptions = {
+    1:"Единицы отвечают за характер и силу воли. Чем их больше — тем сильнее лидерские качества.",
+    2:"Двойки — это энергия и чувствительность. Показывают эмоциональность.",
+    3:"Тройки связаны с интересом к знаниям и общению.",
+    4:"Четвёрки отвечают за здоровье и выносливость.",
+    5:"Пятёрки — логика и мышление.",
+    6:"Шестёрки показывают трудолюбие и практичность.",
+    7:"Семёрки — удача и защита.",
+    8:"Восьмёрки связаны с чувством долга и ответственностью.",
+    9:"Девятки — память и интеллект."
+};
 
-    // Все цифры даты
-    const digits = birth.replace(/\D/g, "").split("").map(Number);
+// Получение всех цифр даты
+function getDigits(str) {
+    return str.split('').filter(c=>/\d/.test(c)).map(Number);
+}
 
-    // С1
-    const s1 = digits.reduce((a, b) => a + b, 0);
+// Расчёт чисел Пифагора
+function calculateMatrix(birth) {
+    const digits = getDigits(birth);
+    if(digits.length === 0) return null;
 
-    // С2
-    const s2 = s1 > 9 ? sumDigits(s1) : s1;
+    const sum1 = digits.reduce((a,b)=>a+b,0);
+    const sum2 = getDigits(String(sum1)).reduce((a,b)=>a+b,0);
+    const first = digits[0];
+    const sum3 = Math.abs(sum1 - 2*first);
+    const sum4 = getDigits(String(sum3)).reduce((a,b)=>a+b,0);
 
-    // День как ЧИСЛО (01 → 1) — КЛАССИКА 5533
-    const day = parseInt(birth.slice(0, 2), 10);
+    const fullDigits = digits.concat(
+        getDigits(String(sum1)),
+        getDigits(String(sum2)),
+        getDigits(String(sum3)),
+        getDigits(String(sum4))
+    );
 
-    // С3
-    const s3 = Math.abs(s1 - 2 * day);
+    const matrix = {};
+    for(let i=1;i<=9;i++) matrix[i]="";
+    fullDigits.forEach(d=>matrix[d]+=d);
 
-    // С4
-    const s4 = s3 > 9 ? sumDigits(s3) : s3;
+    const destiny = sum2 > 9 ? getDigits(String(sum2)).reduce((a,b)=>a+b,0) : sum2;
 
-    // Полный набор цифр для матрицы
-    const allDigits = digits
-        .concat(splitDigits(s1))
-        .concat(splitDigits(s2))
-        .concat(splitDigits(s3))
-        .concat(splitDigits(s4));
+    const temperament = matrix[2].length+matrix[4].length+matrix[6].length;
+    const goal = matrix[1].length+matrix[4].length+matrix[7].length;
+    const family = matrix[2].length+matrix[5].length+matrix[8].length;
+    const habits = matrix[3].length+matrix[6].length+matrix[9].length;
+    const spirituality = matrix[3].length+matrix[5].length+matrix[7].length;
 
-    // Подсчёт
-    const count = {};
-    for (let i = 1; i <= 9; i++) count[i] = "";
+    return {matrix, sum1, sum2, sum3, sum4, destiny, temperament, goal, family, habits, spirituality};
+}
 
-    allDigits.forEach(d => {
-        if (d >= 1 && d <= 9) count[d] += d;
+// Анимация плавного появления
+function animateElements() {
+    document.querySelectorAll(".cell").forEach((el,i)=>{
+        el.style.animationDelay=`${i*0.15}s`;
+        el.classList.add("show");
     });
-
-    renderMatrix(count);
-
-    document.getElementById("s1").textContent = s1;
-    document.getElementById("s2").textContent = s2;
-    document.getElementById("s3").textContent = s3;
-    document.getElementById("s4").textContent = s4;
-
-    document.getElementById("result").classList.remove("hidden");
+    document.querySelectorAll(".side div").forEach((el,i)=>{
+        el.style.animationDelay=`${0.4+i*0.15}s`;
+        el.classList.add("show");
+    });
+    const extra = document.querySelector(".extra");
+    extra.style.animationDelay="1s";
+    extra.classList.add("show");
 }
 
-function sumDigits(num) {
-    return String(num).split("").reduce((a, b) => a + Number(b), 0);
-}
+// Горизонтальная раскладка по твоему запросу:
+// 1 → 4 → 7  
+// 2 → 5 → 8  
+// 3 → 6 → 9
+function renderResults(data) {
+    const grid = document.getElementById("matrixGrid");
+    const side = document.getElementById("sideValues");
+    const extra = document.getElementById("extraValues");
 
-function splitDigits(num) {
-    return String(num).split("").map(Number);
-}
-
-function renderMatrix(c) {
-    const matrix = document.getElementById("matrix");
-    matrix.innerHTML = "";
-
-    // ТВОЙ ПРАВИЛЬНЫЙ ПОРЯДОК
-    const cells = [
-        {n:1, t:"Характер", d:"Единицы — сила воли"},
-        {n:4, t:"Здоровье", d:"Четвёрки — здоровье"},
-        {n:7, t:"Удача", d:"Семёрки — удача"},
-
-        {n:2, t:"Энергия", d:"Двойки — энергия"},
-        {n:5, t:"Логика", d:"Пятёрки — логика"},
-        {n:8, t:"Долг", d:"Восьмёрки — долг"},
-
-        {n:3, t:"Интерес", d:"Тройки — интерес"},
-        {n:6, t:"Труд", d:"Шестёрки — труд"},
-        {n:9, t:"Память", d:"Девятки — память"}
+    const layoutOrder = [
+        1,4,7,
+        2,5,8,
+        3,6,9
     ];
 
-    cells.forEach(cell => {
+    grid.innerHTML = "";
+    layoutOrder.forEach(i=>{
         const div = document.createElement("div");
-        div.className = "cell";
-        div.innerHTML = `
-            <h4>${cell.t}</h4>
-            <div class="value">${c[cell.n] || "—"}</div>
-            <p>${cell.d}</p>
-        `;
-        matrix.appendChild(div);
+        div.className="cell";
+        div.innerHTML=`<strong>${titles[i]}</strong><br>${data.matrix[i] || "—"}<p class="desc">${descriptions[i]}</p>`;
+        grid.appendChild(div);
     });
+
+    side.innerHTML=`
+        <div>Темперамент<br><strong>${data.temperament}</strong></div>
+        <div>Цель<br><strong>${data.goal}</strong></div>
+        <div>Семья<br><strong>${data.family}</strong></div>
+        <div>Привычки<br><strong>${data.habits}</strong></div>
+        <div>Духовность<br><strong>${data.spirituality}</strong></div>
+    `;
+
+    extra.innerHTML=`
+        <h2>Дополнительные числа</h2>
+        <p>1-е: ${data.sum1}</p>
+        <p>2-е: ${data.sum2}</p>
+        <p>3-е: ${data.sum3}</p>
+        <p>4-е: ${data.sum4}</p>
+        <h2>Число судьбы</h2>
+        <div class="destiny">${data.destiny}</div>
+    `;
+
+    animateElements();
 }
+
+// Обработка формы
+document.getElementById("birthForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const birth = document.getElementById("birthDate").value;
+    const data = calculateMatrix(birth);
+    if(data) renderResults(data);
+    else alert("Введите корректную дату в формате ДД.ММ.ГГГГ");
+});
