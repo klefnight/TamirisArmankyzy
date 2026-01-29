@@ -4,16 +4,29 @@ function calculate() {
 
     const digits = date.replace(/-/g, '').split('').map(Number);
 
+    // 1 доп число
     const sum1 = digits.reduce((a, b) => a + b, 0);
+
+    // 2 доп число
     const sum2 = sum1.toString().split('').reduce((a, b) => a + Number(b), 0);
-    const sum3 = sum1 - (digits[0] * 2);
+
+    // первая ненулевая цифра даты
+    const firstNonZero = digits.find(d => d !== 0);
+
+    // 3 доп число (КЛАССИКА)
+    const sum3 = sum1 - (firstNonZero * 2);
+
+    // 4 доп число
     const sum4 = sum3.toString().split('').reduce((a, b) => a + Number(b), 0);
 
-    const allDigits = digits
-        .concat(sum1.toString().split(''))
-        .concat(sum2.toString().split(''))
-        .concat(sum3.toString().split(''))
-        .concat(sum4.toString().split(''));
+    // Все цифры для квадрата
+    const allDigits = [
+        ...digits,
+        ...sum1.toString().split('').map(Number),
+        ...sum2.toString().split('').map(Number),
+        ...sum3.toString().split('').map(Number),
+        ...sum4.toString().split('').map(Number)
+    ];
 
     const counts = {};
     for (let i = 1; i <= 9; i++) counts[i] = '';
@@ -27,7 +40,9 @@ function calculate() {
     }
 
     document.getElementById('dateOut').textContent = date;
-    document.getElementById('extraNumbers').textContent = `${sum1}, ${sum2}, ${sum3}, ${sum4}`;
+    document.getElementById('extraNumbers').textContent =
+        `${sum1}, ${sum2}, ${sum3}, ${sum4}`;
+
     document.getElementById('lifeNumber').textContent = sum2;
 
     document.getElementById('interpretation').innerHTML =
@@ -40,15 +55,15 @@ function calculate() {
 
 function lifeMeaning(n) {
     const meanings = {
-        1: "Лидерство, сила воли, самостоятельность",
-        2: "Чувствительность, дипломатия, партнёрство",
-        3: "Творчество, общительность, вдохновение",
-        4: "Стабильность, трудолюбие, порядок",
-        5: "Свобода, перемены, энергия",
-        6: "Ответственность, семья, забота",
-        7: "Анализ, мудрость, духовность",
-        8: "Амбиции, успех, управление",
-        9: "Гуманизм, завершение, опыт"
+        1: "Лидерство, сила воли",
+        2: "Чувствительность, партнёрство",
+        3: "Творчество, общительность",
+        4: "Стабильность, труд",
+        5: "Свобода, энергия",
+        6: "Семья, ответственность",
+        7: "Мудрость, анализ",
+        8: "Успех, власть",
+        9: "Опыт, гуманизм"
     };
     return meanings[n] || "Индивидуальный путь";
 }
