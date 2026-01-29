@@ -2,24 +2,32 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Tamiris Armankyzy</title>
+    <title>Квадрат Пифагора</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Квадрат Пифагора</h1>
+<div class="container">
+    <h1>Квадрат Пифагора</h1>
 
-<form id="birthForm">
-    <input type="text" id="birthDate" placeholder="ДД.ММ.ГГГГ">
-    <button type="submit">Рассчитать</button>
-</form>
+    <input type="text" id="birth" placeholder="ДД.ММ.ГГГГ">
+    <button onclick="calculate()">Рассчитать</button>
 
-<div class="layout">
-    <div class="grid" id="matrixGrid"></div>
-    <div class="side" id="sideValues"></div>
+    <div id="result" class="hidden">
+
+        <div class="matrix" id="matrix"></div>
+
+        <div class="extras">
+            <h3>Дополнительные числа</h3>
+            <p>С1: <span id="s1"></span></p>
+            <p>С2: <span id="s2"></span></p>
+            <p>С3: <span id="s3"></span></p>
+            <p>С4: <span id="s4"></span></p>
+        </div>
+
+    </div>
 </div>
-
-<div class="extra" id="extraValues"></div>
 
 <script src="script.js"></script>
 </body>
