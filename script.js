@@ -1,11 +1,7 @@
 function calculate() {
     const input = document.getElementById('birthdate').value;
-    if (!input) {
-        alert("Введите дату рождения");
-        return;
-    }
+    if (!input) return alert("Введите дату");
 
-    // ===== 1. Парсинг даты =====
     const [year, month, day] = input.split('-').map(Number);
 
     if (!isValidDate(day, month, year)) {
@@ -13,23 +9,22 @@ function calculate() {
         return;
     }
 
-    // ===== 2. Цифры даты (включая нули) =====
+    // ===== цифры даты (ВСЕ, включая нули) =====
     const dateDigits = `${pad(day)}${pad(month)}${year}`
         .split('')
         .map(Number);
 
-    // ===== 3. Доп. числа =====
+    // ===== доп числа (СТРОГО тетрадно) =====
     const A = dateDigits.reduce((a, b) => a + b, 0);
-
     const B = sumDigits(A);
 
-    const firstNonZero = dateDigits.find(d => d !== 0);
-    let C = A - firstNonZero * 2;
-    if (C < 0) C = Math.abs(C); // тетрадная практика
+    // первая цифра ДНЯ (ключевой момент)
+    const firstDayDigit = day.toString().padStart(2, '0')[0];
 
+    const C = Math.abs(A - firstDayDigit * 2);
     const D = sumDigits(C);
 
-    // ===== 4. Все цифры для квадрата =====
+    // ===== все цифры для квадрата =====
     const allDigits = [
         ...dateDigits,
         ...digitsOf(A),
@@ -38,17 +33,13 @@ function calculate() {
         ...digitsOf(D)
     ];
 
-    // ===== 5. Подсчёт 1–9 =====
     const cells = {};
     for (let i = 1; i <= 9; i++) cells[i] = '';
 
     allDigits.forEach(d => {
-        if (d >= 1 && d <= 9) {
-            cells[d] += d;
-        }
+        if (d >= 1 && d <= 9) cells[d] += d;
     });
 
-    // ===== 6. Вывод =====
     for (let i = 1; i <= 9; i++) {
         document.getElementById('c' + i).textContent =
             cells[i] || '–';
@@ -73,10 +64,7 @@ function calculate() {
 /* ===== ВСПОМОГАТЕЛЬНЫЕ ===== */
 
 function sumDigits(n) {
-    return Math.abs(n)
-        .toString()
-        .split('')
-        .reduce((a, b) => a + Number(b), 0);
+    return Math.abs(n).toString().split('').reduce((a, b) => a + +b, 0);
 }
 
 function digitsOf(n) {
@@ -89,24 +77,20 @@ function pad(n) {
 
 function isValidDate(d, m, y) {
     const date = new Date(y, m - 1, d);
-    return (
-        date.getFullYear() === y &&
-        date.getMonth() === m - 1 &&
-        date.getDate() === d
-    );
+    return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
 }
 
 function lifeMeaning(n) {
-    const meanings = {
-        1: "Лидерство, воля, инициатива",
+    const m = {
+        1: "Лидерство, сила воли",
         2: "Чувствительность, дипломатия",
         3: "Творчество, общение",
         4: "Стабильность, порядок",
-        5: "Свобода, движение",
-        6: "Ответственность, семья",
+        5: "Свобода, энергия",
+        6: "Семья, ответственность",
         7: "Мудрость, анализ",
-        8: "Материальный успех",
+        8: "Успех, управление",
         9: "Опыт, гуманизм"
     };
-    return meanings[n] || "Индивидуальный путь";
+    return m[n] || "Индивидуальный путь";
 }
