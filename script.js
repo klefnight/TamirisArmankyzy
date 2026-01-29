@@ -1,87 +1,129 @@
-function calculate() {
-    const input = document.getElementById('birthdate').value;
-    if (!input) return alert("Введите дату");
+const titles = {
+    1:"Характер",
+    2:"Энергия",
+    3:"Интерес",
+    4:"Здоровье",
+    5:"Логика",
+    6:"Труд",
+    7:"Удача",
+    8:"Долг",
+    9:"Память"
+};
 
-    const [year, month, day] = input.split('-').map(Number);
+const descriptions = {
+    1:"Единицы отвечают за характер и силу воли. Чем их больше — тем сильнее лидерские качества.",
+    2:"Двойки — это энергия и чувствительность. Показывают эмоциональность.",
+    3:"Тройки связаны с интересом к знаниям и общению.",
+    4:"Четвёрки отвечают за здоровье и выносливость.",
+    5:"Пятёрки — логика и мышление.",
+    6:"Шестёрки показывают трудолюбие и практичность.",
+    7:"Семёрки — удача и защита.",
+    8:"Восьмёрки связаны с чувством долга и ответственностью.",
+    9:"Девятки — память и интеллект."
+};
 
-    if (!isValidDate(day, month, year)) {
-        alert("Некорректная дата");
-        return;
-    }
+// Получение всех цифр даты
+function getDigits(str) {
+    return str.split('').filter(c=>/\d/.test(c)).map(Number);
+}
 
-    // ===== цифры даты (все, включая нули) =====
-    const dateDigits = `${pad(day)}${pad(month)}${year}`.split('').map(Number);
+// Расчёт чисел Пифагора
+function calculateMatrix(birth) {
+    const digits = getDigits(birth);
+    if(digits.length === 0) return null;
 
-    // ===== доп числа =====
-    const A = dateDigits.reduce((a,b)=>a+b,0);
-    const B = sumDigits(A);
+    const sum1 = digits.reduce((a,b)=>a+b,0);
+    const sum2 = getDigits(String(sum1)).reduce((a,b)=>a+b,0);
+    const first = digits[0];
+    const sum3 = Math.abs(sum1 - 2*first);
+    const sum4 = getDigits(String(sum3)).reduce((a,b)=>a+b,0);
 
-    // ===== правильная первая цифра дня =====
-    let dayStr = pad(day); // "01" -> "01"
-    let firstDayDigit = Number(dayStr[0]);
-    if(firstDayDigit === 0) firstDayDigit = Number(dayStr[1]); // если 0, берём вторую
+    const fullDigits = digits.concat(
+        getDigits(String(sum1)),
+        getDigits(String(sum2)),
+        getDigits(String(sum3)),
+        getDigits(String(sum4))
+    );
 
-    const C = Math.abs(A - 2 * firstDayDigit);
-    const D = sumDigits(C);
+    const matrix = {};
+    for(let i=1;i<=9;i++) matrix[i]="";
+    fullDigits.forEach(d=>matrix[d]+=d);
 
-    // ===== все цифры для квадрата =====
-    const allDigits = [
-        ...dateDigits,
-        ...digitsOf(A),
-        ...digitsOf(B),
-        ...digitsOf(C),
-        ...digitsOf(D)
+    const destiny = sum2 > 9 ? getDigits(String(sum2)).reduce((a,b)=>a+b,0) : sum2;
+
+    const temperament = matrix[2].length+matrix[4].length+matrix[6].length;
+    const goal = matrix[1].length+matrix[4].length+matrix[7].length;
+    const family = matrix[2].length+matrix[5].length+matrix[8].length;
+    const habits = matrix[3].length+matrix[6].length+matrix[9].length;
+    const spirituality = matrix[3].length+matrix[5].length+matrix[7].length;
+
+    return {matrix, sum1, sum2, sum3, sum4, destiny, temperament, goal, family, habits, spirituality};
+}
+
+// Анимация плавного появления
+function animateElements() {
+    document.querySelectorAll(".cell").forEach((el,i)=>{
+        el.style.animationDelay=`${i*0.15}s`;
+        el.classList.add("show");
+    });
+    document.querySelectorAll(".side div").forEach((el,i)=>{
+        el.style.animationDelay=`${0.4+i*0.15}s`;
+        el.classList.add("show");
+    });
+    const extra = document.querySelector(".extra");
+    extra.style.animationDelay="1s";
+    extra.classList.add("show");
+}
+
+// Горизонтальная раскладка по твоему запросу:
+// 1 → 4 → 7  
+// 2 → 5 → 8  
+// 3 → 6 → 9
+function renderResults(data) {
+    const grid = document.getElementById("matrixGrid");
+    const side = document.getElementById("sideValues");
+    const extra = document.getElementById("extraValues");
+
+    const layoutOrder = [
+        1,4,7,
+        2,5,8,
+        3,6,9
     ];
 
-    const cells = {};
-    for(let i=1;i<=9;i++) cells[i]='';
-
-    allDigits.forEach(d=>{
-        if(d>=1 && d<=9) cells[d]+=d;
+    grid.innerHTML = "";
+    layoutOrder.forEach(i=>{
+        const div = document.createElement("div");
+        div.className="cell";
+        div.innerHTML=`<strong>${titles[i]}</strong><br>${data.matrix[i] || "—"}<p class="desc">${descriptions[i]}</p>`;
+        grid.appendChild(div);
     });
 
-    for(let i=1;i<=9;i++){
-        document.getElementById('c'+i).textContent = cells[i] || '–';
-    }
+    side.innerHTML=`
+        <div>Темперамент<br><strong>${data.temperament}</strong></div>
+        <div>Цель<br><strong>${data.goal}</strong></div>
+        <div>Семья<br><strong>${data.family}</strong></div>
+        <div>Привычки<br><strong>${data.habits}</strong></div>
+        <div>Духовность<br><strong>${data.spirituality}</strong></div>
+    `;
 
-    document.getElementById('dateOut').textContent = `${pad(day)}.${pad(month)}.${year}`;
-    document.getElementById('extraNumbers').textContent = `${A}, ${B}, ${C}, ${D}`;
-    document.getElementById('lifeNumber').textContent = B;
-    document.getElementById('interpretation').innerHTML = `<b>Число судьбы ${B}:</b> ${lifeMeaning(B)}`;
+    extra.innerHTML=`
+        <h2>Дополнительные числа</h2>
+        <p>1-е: ${data.sum1}</p>
+        <p>2-е: ${data.sum2}</p>
+        <p>3-е: ${data.sum3}</p>
+        <p>4-е: ${data.sum4}</p>
+        <h2>Число судьбы</h2>
+        <div class="destiny">${data.destiny}</div>
+    `;
 
-    const result = document.getElementById('result');
-    result.classList.remove('hidden');
-    setTimeout(()=>result.classList.add('show'),50);
+    animateElements();
 }
 
-function sumDigits(n){
-    return Math.abs(n).toString().split('').reduce((a,b)=>a+Number(b),0);
-}
-
-function digitsOf(n){
-    return Math.abs(n).toString().split('').map(Number);
-}
-
-function pad(n){
-    return n.toString().padStart(2,'0');
-}
-
-function isValidDate(d,m,y){
-    const date = new Date(y,m-1,d);
-    return date.getFullYear()===y && date.getMonth()===m-1 && date.getDate()===d;
-}
-
-function lifeMeaning(n){
-    const m = {
-        1:"Лидерство, сила воли",
-        2:"Чувствительность, дипломатия",
-        3:"Творчество, общение",
-        4:"Стабильность, порядок",
-        5:"Свобода, энергия",
-        6:"Семья, ответственность",
-        7:"Мудрость, анализ",
-        8:"Успех, управление",
-        9:"Опыт, гуманизм"
-    };
-    return m[n] || "Индивидуальный путь";
-}
+// Обработка формы
+document.getElementById("birthForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    const birth = document.getElementById("birthDate").value;
+    const data = calculateMatrix(birth);
+    if(data) renderResults(data);
+    else alert("Введите корректную дату в формате ДД.ММ.ГГГГ");
+});
