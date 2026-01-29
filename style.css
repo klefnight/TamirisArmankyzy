@@ -1,12 +1,11 @@
 body {
     font-family: Arial, sans-serif;
-    background: #fff0f5;
+    background: #fff0f6;
     margin: 0;
-    padding: 0;
 }
 
 .container {
-    max-width: 700px;
+    max-width: 720px;
     margin: 40px auto;
     text-align: center;
 }
@@ -17,13 +16,13 @@ h1 {
 
 input, button {
     padding: 10px;
-    font-size: 16px;
     border-radius: 8px;
     border: none;
+    font-size: 16px;
 }
 
 input {
-    background: #ffe4ec;
+    background: #ffe3ed;
 }
 
 button {
@@ -49,8 +48,12 @@ button:hover {
     transform: translateY(0);
 }
 
-.numbers {
-    background: #ffe4ec;
+.hidden {
+    display: none;
+}
+
+.numbers, .interpretation {
+    background: #ffe3ed;
     padding: 15px;
     border-radius: 12px;
     margin-bottom: 20px;
@@ -63,24 +66,13 @@ button:hover {
 }
 
 .square div {
-    background: #fff7fa;
+    background: #fff8fb;
     padding: 15px;
     border-radius: 12px;
-    border: 1px solid #f3c6d3;
+    border: 1px solid #f2c5d3;
 }
 
 .square span {
     font-size: 18px;
     color: #b45f78;
-}
-
-.interpretation {
-    margin-top: 20px;
-    background: #ffe4ec;
-    padding: 15px;
-    border-radius: 12px;
-}
-
-.hidden {
-    display: none;
 }
