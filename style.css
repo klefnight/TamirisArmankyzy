@@ -1,92 +1,86 @@
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
-    background: #fff0f6;
+    background: #fff0f5;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-    max-width: 420px;
-    margin: auto;
-    padding: 20px;
+    max-width: 700px;
+    margin: 40px auto;
     text-align: center;
 }
 
 h1 {
-    color: #c2185b;
+    color: #b45f78;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
 }
 
 input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 12px;
-    border: 1px solid #f8bbd0;
-    font-size: 16px;
+    background: #ffe4ec;
 }
 
 button {
-    width: 100%;
-    padding: 12px;
-    background: #f48fb1;
-    border: none;
-    border-radius: 12px;
+    background: #d16c8a;
     color: white;
-    font-size: 16px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 button:hover {
-    background: #ec407a;
+    background: #b45f78;
 }
 
-.matrix {
+.result {
+    margin-top: 30px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.6s ease;
+}
+
+.result.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.numbers {
+    background: #ffe4ec;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.square {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-top: 20px;
 }
 
-.cell {
-    background: white;
-    border-radius: 14px;
-    padding: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    opacity: 0;
-    transform: scale(0.9);
-    animation: appear 0.4s ease forwards;
-}
-
-.cell h4 {
-    margin: 0;
-    font-size: 14px;
-    color: #ad1457;
-}
-
-.cell .value {
-    font-size: 20px;
-    margin: 6px 0;
-    color: #880e4f;
-}
-
-.cell p {
-    font-size: 12px;
-    color: #555;
-}
-
-.extras {
-    margin-top: 20px;
-    background: white;
-    border-radius: 14px;
+.square div {
+    background: #fff7fa;
     padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #f3c6d3;
+}
+
+.square span {
+    font-size: 18px;
+    color: #b45f78;
+}
+
+.interpretation {
+    margin-top: 20px;
+    background: #ffe4ec;
+    padding: 15px;
+    border-radius: 12px;
 }
 
 .hidden {
     display: none;
-}
-
-@keyframes appear {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
