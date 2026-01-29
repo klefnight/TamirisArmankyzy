@@ -2,42 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Квадрат Пифагора</title>
+    <title>Tamiris Armankyzy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-    <h1>Квадрат Пифагора</h1>
+<h1>Квадрат Пифагора</h1>
 
-    <input type="date" id="birthdate">
-    <button onclick="calculate()">Рассчитать</button>
+<form id="birthForm">
+    <input type="text" id="birthDate" placeholder="ДД.ММ.ГГГГ">
+    <button type="submit">Рассчитать</button>
+</form>
 
-    <div id="result" class="result hidden">
-
-        <div class="numbers">
-            <p><b>Дата рождения:</b> <span id="dateOut"></span></p>
-            <p><b>Доп. числа:</b> <span id="extraNumbers"></span></p>
-            <p><b>Число судьбы:</b> <span id="lifeNumber"></span></p>
-        </div>
-
-        <div class="square">
-            <div>Характер<br><span id="c1"></span></div>
-            <div>Здоровье<br><span id="c4"></span></div>
-            <div>Удача<br><span id="c7"></span></div>
-
-            <div>Энергия<br><span id="c2"></span></div>
-            <div>Логика<br><span id="c5"></span></div>
-            <div>Долг<br><span id="c8"></span></div>
-
-            <div>Интерес<br><span id="c3"></span></div>
-            <div>Труд<br><span id="c6"></span></div>
-            <div>Память<br><span id="c9"></span></div>
-        </div>
-
-        <div class="interpretation" id="interpretation"></div>
-    </div>
+<div class="layout">
+    <div class="grid" id="matrixGrid"></div>
+    <div class="side" id="sideValues"></div>
 </div>
+
+<div class="extra" id="extraValues"></div>
 
 <script src="script.js"></script>
 </body>
