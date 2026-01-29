@@ -1,76 +1,89 @@
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+function calculate() {
+    const birth = document.getElementById("birth").value;
 
-    const input = document.querySelector(".matrix_date");
-    const button = document.querySelector(".matrix__button");
+    if (!/^\d{2}\.\d{2}\.\d{4}$/.test(birth)) {
+        alert("Введите дату в формате ДД.ММ.ГГГГ");
+        return;
+    }
 
-    button.addEventListener("click", () => {
-        const date = input.value.trim();
-        if (!/^\d{2}\.\d{2}\.\d{4}$/.test(date)) {
-            alert("Введите дату в формате ДД.ММ.ГГГГ");
-            return;
-        }
+    // Все цифры даты
+    const digits = birth.replace(/\D/g, "").split("").map(Number);
 
-        const result = calculatePythagoras(date);
-        renderResult(result, date);
+    // С1
+    const s1 = digits.reduce((a, b) => a + b, 0);
+
+    // С2
+    const s2 = s1 > 9 ? sumDigits(s1) : s1;
+
+    // День как ЧИСЛО (01 → 1) — КЛАССИКА 5533
+    const day = parseInt(birth.slice(0, 2), 10);
+
+    // С3
+    const s3 = Math.abs(s1 - 2 * day);
+
+    // С4
+    const s4 = s3 > 9 ? sumDigits(s3) : s3;
+
+    // Полный набор цифр для матрицы
+    const allDigits = digits
+        .concat(splitDigits(s1))
+        .concat(splitDigits(s2))
+        .concat(splitDigits(s3))
+        .concat(splitDigits(s4));
+
+    // Подсчёт
+    const count = {};
+    for (let i = 1; i <= 9; i++) count[i] = "";
+
+    allDigits.forEach(d => {
+        if (d >= 1 && d <= 9) count[d] += d;
     });
 
-    function calculatePythagoras(date) {
-        const digits = date.replace(/\./g, "").split("").map(Number);
+    renderMatrix(count);
 
-        // 1. Сумма всех цифр
-        const sum1 = digits.reduce((a, b) => a + b, 0);
+    document.getElementById("s1").textContent = s1;
+    document.getElementById("s2").textContent = s2;
+    document.getElementById("s3").textContent = s3;
+    document.getElementById("s4").textContent = s4;
 
-        // 2. Сумма цифр первого числа
-        const sum2 = sum1.toString().split("").reduce((a, b) => a + +b, 0);
+    document.getElementById("result").classList.remove("hidden");
+}
 
-        // 3. Первое доп. число
-        const day = Number(date.split(".")[0]);
-        const sum3 = sum1 - (day * 2);
+function sumDigits(num) {
+    return String(num).split("").reduce((a, b) => a + Number(b), 0);
+}
 
-        // 4. Сумма цифр третьего числа
-        const sum4 = Math.abs(sum3)
-            .toString()
-            .split("")
-            .reduce((a, b) => a + +b, 0);
+function splitDigits(num) {
+    return String(num).split("").map(Number);
+}
 
-        // Все цифры для матрицы
-        const allDigits = [
-            ...digits,
-            ...sum1.toString().split("").map(Number),
-            ...sum2.toString().split("").map(Number),
-            ...Math.abs(sum3).toString().split("").map(Number),
-            ...sum4.toString().split("").map(Number)
-        ];
+function renderMatrix(c) {
+    const matrix = document.getElementById("matrix");
+    matrix.innerHTML = "";
 
-        // Матрица 1–9
-        const matrix = Array.from({ length: 9 }, () => "");
+    // ТВОЙ ПРАВИЛЬНЫЙ ПОРЯДОК
+    const cells = [
+        {n:1, t:"Характер", d:"Единицы — сила воли"},
+        {n:4, t:"Здоровье", d:"Четвёрки — здоровье"},
+        {n:7, t:"Удача", d:"Семёрки — удача"},
 
-        allDigits.forEach(n => {
-            if (n >= 1 && n <= 9) {
-                matrix[n - 1] += n;
-            }
-        });
+        {n:2, t:"Энергия", d:"Двойки — энергия"},
+        {n:5, t:"Логика", d:"Пятёрки — логика"},
+        {n:8, t:"Долг", d:"Восьмёрки — долг"},
 
-        return {
-            matrix,
-            destiny: sum2,
-            extra: `${sum1}, ${sum2}, ${sum3}, ${sum4}`
-        };
-    }
+        {n:3, t:"Интерес", d:"Тройки — интерес"},
+        {n:6, t:"Труд", d:"Шестёрки — труд"},
+        {n:9, t:"Память", d:"Девятки — память"}
+    ];
 
-    function renderResult(data, date) {
-        document.querySelector('[data-answer="date"]').textContent = date;
-        document.querySelector('[data-answer="second-number"]').textContent = data.extra;
-        document.querySelector('[data-answer="destiny-number"]').textContent = data.destiny;
-
-        document.querySelectorAll("[data-index]").forEach(el => {
-            const index = Number(el.dataset.index);
-            el.textContent = data.matrix[index] || "—";
-        });
-
-        document.querySelector(".result__hidden")?.style.display = "block";
-    }
-
-});
-</script>
+    cells.forEach(cell => {
+        const div = document.createElement("div");
+        div.className = "cell";
+        div.innerHTML = `
+            <h4>${cell.t}</h4>
+            <div class="value">${c[cell.n] || "—"}</div>
+            <p>${cell.d}</p>
+        `;
+        matrix.appendChild(div);
+    });
+}
